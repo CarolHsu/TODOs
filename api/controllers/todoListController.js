@@ -29,7 +29,7 @@ exports.read_a_task = function (req, res) {
 };
 
 exports.update_a_task = function (req, res) {
-    Task.findOneAndUpdate(req.params.taskId, function (err, task) {
+    Task.findOneAndUpdate(req.params.taskId, req.body, { new: true }, function (err, task) {
         if (err)
             res.send(err);
         res.json(task);
