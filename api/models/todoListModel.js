@@ -21,4 +21,4 @@ var TaskSchema = new Schema({
     }
 });
 
-module.export = mongoose.model('Task', TaskSchema);
+module.exports = mongoose.model('Tasks', TaskSchema);
