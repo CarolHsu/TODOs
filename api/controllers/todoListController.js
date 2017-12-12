@@ -1,6 +1,8 @@
 'use strict';
 
-var fs = require('fs'),
+var path = require('path'),
+    appDir = path.dirname(require.main.filename),
+    fs = require('fs'),
     readline = require('readline'),
     google = require('googleapis'),
     googleAuth = require('google-auth-library');
@@ -73,7 +75,8 @@ function listEvents(auth) {
         auth: auth,
         calendarId: 'primary',
         timeMin: (new Date()).toISOString(),
-        maxResult: 10,
+        maxResults: 10,
+        timeMax: 2011-06-03T10:00:00-07:00
         singleEvents: true,
         orderBy: 'startTime'
     }, function (err, response) {
@@ -96,7 +99,7 @@ function listEvents(auth) {
 }
 
 exports.index = function (req, res) {
-    fs.readFile('client_secret.json', function processClientSecrets (err, content) {
+    fs.readFile(appDir + '/client_secret.json', function processClientSecrets (err, content) {
         if (err) {
             console.log('Get error when loading client secret file: ' + err);
             return;
