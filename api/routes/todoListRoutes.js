@@ -8,7 +8,7 @@ module.exports = function(app) {
     .post(todoList.create);
 
     app.route('/tasks/:taskId')
-    .get(todoList.show)
+    //.get(todoList.show)
     .put(todoList.update)
     .delete(todoList.destroy)
 };

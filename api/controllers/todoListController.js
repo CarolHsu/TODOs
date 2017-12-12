@@ -15,7 +15,7 @@ var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 
-function authorize(credentials, callback) {
+function authorize(credentials, callback, res) {
     var clientSecret = credentials.installed.client_secret;
     var clientId = credentials.installed.client_id;
     var redirectUrl = credentials.installed.redirect_uris[0];
@@ -27,7 +27,7 @@ function authorize(credentials, callback) {
             getNewToken(oauth2Client, callback);
         } else {
             oauth2Client.credentials = JSON.parse(token);
-            callback(oauth2Client);
+            return callback(oauth2Client, res);
         }
     });
 }
@@ -51,7 +51,7 @@ function getNewToken(oauth2Client, callback) {
             }
             oauth2Client.credentials = token;
             storeToken(token);
-            callback(oauth2Client);
+            callback(oauth2Client, res);
         });
     });
 }
@@ -69,14 +69,13 @@ function storeToken(token) {
 }
 
 // API major part
-function listEvents(auth) {
+function listEvents(auth, res) {
     var calendar = google.calendar('v3');
     calendar.events.list({
         auth: auth,
         calendarId: 'primary',
         timeMin: (new Date()).toISOString(),
         maxResults: 10,
-        timeMax: 2011-06-03T10:00:00-07:00
         singleEvents: true,
         orderBy: 'startTime'
     }, function (err, response) {
@@ -94,6 +93,7 @@ function listEvents(auth) {
                 var start = event.start.dateTime || event.start.date;
                 console.log('%s - %s', start, event.summary);
             }
+            res.json(events);
         }
     });
 }
@@ -104,15 +104,15 @@ exports.index = function (req, res) {
             console.log('Get error when loading client secret file: ' + err);
             return;
         }
-        authorize(JSON.parse(content), listEvents);
+        authorize(JSON.parse(content), listEvents, res);
     });
 };
 
 exports.create = function (req, res) {
 };
 
-exports.show = function (req, res) {
-};
+//exports.show = function (req, res) {
+//};
 
 exports.update = function (req, res) {
 };
