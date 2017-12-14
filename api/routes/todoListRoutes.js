@@ -3,12 +3,12 @@
 module.exports = function(app) {
     var todoList = require('../controllers/todoListController');
 
-    app.route('/tasks')
+    app.route('/events')
     .get(todoList.index)
     .post(todoList.create);
 
-    app.route('/tasks/:taskId')
-    //.get(todoList.show)
+    app.route('/events/:eventId')
+    .get(todoList.show)
     .put(todoList.update)
-    .delete(todoList.destroy)
+    .delete(todoList.destroy);
 };
