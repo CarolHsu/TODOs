@@ -186,4 +186,11 @@ exports.update = function (req, res) {
 };
 
 exports.destroy = function (req, res) {
+    fs.readFile(appDir + '/client_secret.json', function processClientSecrets (err, content) {
+        if (err) {
+            console.log('Get error when loading client secret file: ' + err);
+            return;
+        }
+        authorize(JSON.parse(content), removeEvent, res, { eventId: req.params.eventId});
+    });
 };
