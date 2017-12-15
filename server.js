@@ -1,13 +1,13 @@
-var express = require('express'),
-    app = express(),
-    port = process.env.PORT || 3000;
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3001;
 
-var routes = require('./routes/todoListRoutes');
+app.set("port", port);
+
+const routes = require('./routes/todoListRoutes');
 routes(app);
 
-app.listen(port);
+app.listen(app.get("port"), () => {
+  console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
+});
 
-app.set('view engine', 'pug');
-app.set('views', './app/views');
-
-console.log('todo list RESTful APIs server started on: ' + port);

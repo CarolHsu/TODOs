@@ -4,8 +4,11 @@
   "description": "This is a todolist",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server.js",
+    "client": "node start-client.js",
+    "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
+    "lint": "eslint ."
   },
   "keywords": [
     "todolist"
@@ -13,14 +16,17 @@
   "author": "shesee <sheseee@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^3.5.1",
+    "eslint": "^4.13.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
     "nodemon": "^1.12.5"
   },
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "babel-core": "^6.26.0",
     "express": "^4.16.2",
     "google-auth-library": "^0.12.0",
-    "googleapis": "^23.0.0",
-    "mongoose": "^4.13.6",
-    "pug": "^2.0.0-rc.4"
+    "googleapis": "^23.0.0"
   }
 }
