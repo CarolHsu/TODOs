@@ -1,6 +1,6 @@
 'use strict';
 
-var path = require('path'),
+const path = require('path'),
     appDir = path.dirname(require.main.filename),
     fs = require('fs'),
     readline = require('readline'),
@@ -9,20 +9,21 @@ var path = require('path'),
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
-var SCOPES = ['https://www.googleapis.com/auth/calendar'];
-var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
+// Then run again `node build_token.js`
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
-var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
+const TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
 
-function authorize(credentials, callback, res, options) {
-    var clientSecret = credentials.installed.client_secret;
-    var clientId = credentials.installed.client_id;
-    var redirectUrl = credentials.installed.redirect_uris[0];
-    var auth = new googleAuth();
-    var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
+const authorize = (credentials, callback, res, options) => {
+    const clientSecret = credentials.installed.client_secret;
+    const clientId = credentials.installed.client_id;
+    const redirectUrl = credentials.installed.redirect_uris[0];
+    const auth = new googleAuth();
+    const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
-    fs.readFile(TOKEN_PATH, function (err, token) {
+    fs.readFile(TOKEN_PATH, (err, token) => {
         if (err) {
             console.log("Build your tokens first, by execute `node build_token.js`");
         } else {
@@ -30,11 +31,11 @@ function authorize(credentials, callback, res, options) {
             return callback(oauth2Client, res, options);
         }
     });
-}
+};
 
 // API major part
-function listEvents(auth, res, options={}) {
-    var calendar = google.calendar('v3');
+const listEvents = (auth, res, options={}) => {
+    const calendar = google.calendar('v3');
     calendar.events.list({
         auth: auth,
         calendarId: 'primary',
@@ -42,83 +43,83 @@ function listEvents(auth, res, options={}) {
         maxResults: 10,
         singleEvents: true,
         orderBy: 'startTime'
-    }, function (err, response) {
+    }, (err, response) => {
         if (err) {
             console.log('The API returns an error: ', err)
             return;
         }
-        var events = response.items;
+        const events = response.items;
         if (events.length == 0) {
             console.log('No upcoming events found.');
         } else {
             res.json(events);
         }
     });
-}
+};
 
-function getEvent(auth, res, options) {
-    var calendar = google.calendar('v3');
+const getEvent = (auth, res, options) => {
+    const calendar = google.calendar('v3');
     calendar.events.get({
         auth: auth,
         calendarId: 'primary',
         eventId: options.eventId
-    }, function(err, response) {
+    }, (err, response) => {
         if (err) {
             console.log('The API returns an error: ', err)
             return;
         }
         res.json(response);
     });
-}
+};
 
-function addEvent(auth, res, options) {
-    var calendar = google.calendar('v3');
+const addEvent = (auth, res, options) => {
+    const calendar = google.calendar('v3');
     calendar.events.insert({
         auth: auth,
         calendarId: 'primary',
         resources: options.resources
-    }, function(err, response){
+    }, (err, response) => {
         if (err) {
             console.log('Error: ', err);
             return;
         }
         res.json(response);
     });
-}
+};
 
-function updateEvent(auth, res, options) {
-    var calendar = google.calendar('v3');
+const updateEvent = (auth, res, options) => {
+    const calendar = google.calendar('v3');
     calendar.events.update({
         auth: auth,
         calendarId: 'primary',
         eventId: options.eventId,
         resources: options.resources
-    }, function(err, response) {
+    }, (err, response) => {
         if (err) {
             console.log('Error: ', err);
             return;
         }
         res.json(response);
     });
-}
+};
 
-function removeEvent(auth, res, options) {
-    var calendar = google.calendar('v3');
+const removeEvent = (auth, res, options) => {
+    const calendar = google.calendar('v3');
     calendar.events.delete({
         auth: auth,
         calendarId: 'primary',
         eventId: options.eventId
-    }, function (err) {
+    }, (err) => {
         if (err) {
             console.log('Error: ', err);
             return;
         }
         res.json({'message': 'Deleted event successfully'});
     });
-}
+};
 
-exports.index = function (req, res) {
-    fs.readFile(appDir + '/client_secret.json', function processClientSecrets (err, content) {
+exports.index = (req, res) => {
+    fs.readFile(appDir + '/client_secret.json', (err, content) => {
         if (err) {
             console.log('Get error when loading client secret file: ' + err);
             return;
@@ -127,11 +128,11 @@ exports.index = function (req, res) {
     });
 };
 
-exports.create = function (req, res) {
+exports.create = (req, res) => {
 };
 
-exports.show = function (req, res) {
-    fs.readFile(appDir + '/client_secret.json', function processClientSecrets (err, content) {
+exports.show = (req, res) => {
+    fs.readFile(appDir + '/client_secret.json', (err, content) => {
         if (err) {
             console.log('Get error when loading client secret file: ' + err);
             return;
@@ -140,11 +141,11 @@ exports.show = function (req, res) {
     });
 };
 
-exports.update = function (req, res) {
+exports.update = (req, res) => {
 };
 
-exports.destroy = function (req, res) {
-    fs.readFile(appDir + '/client_secret.json', function processClientSecrets (err, content) {
+exports.destroy = (req, res) => {
+    fs.readFile(appDir + '/client_secret.json', (err, content) => {
         if (err) {
             console.log('Get error when loading client secret file: ' + err);
             return;
