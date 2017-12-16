@@ -7,6 +7,16 @@ const index = (callback) => {
     .then(callback);
 };
 
+const create = (summary, callback) => {
+    return fetch(`/events?summary=${summary}`, {
+        method: 'POST',
+        accept: "application/json"
+    })
+    .then(checkStatus)
+    .then(parseJSON)
+    .then(callback);
+};
+
 const checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
         return response;
@@ -23,7 +33,8 @@ const parseJSON = (response) => {
 };
 
 const Client = {
-    index
+    index,
+    create
 };
 
 export default Client;
