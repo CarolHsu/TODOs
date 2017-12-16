@@ -15,8 +15,10 @@ const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 const TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
+const TODAY = new Date();
 
-const authorize = (credentials, callback, res, options) => {
+
+const authorize = (credentials, callback, res, options={}) => {
     const clientSecret = credentials.installed.client_secret;
     const clientId = credentials.installed.client_id;
     const redirectUrl = credentials.installed.redirect_uris[0];
@@ -74,10 +76,19 @@ const getEvent = (auth, res, options) => {
 
 const addEvent = (auth, res, options) => {
     const calendar = google.calendar('v3');
+    const event = {
+        summary: options.summary,
+        start: {
+            dateTime: TODAY.toISOString()
+        },
+        end: {
+            dateTime: TODAY.toISOString()
+        }
+    };
     calendar.events.insert({
         auth: auth,
         calendarId: 'primary',
-        resources: options.resources
+        resource: event
     }, (err, response) => {
         if (err) {
             console.log('Error: ', err);
@@ -129,6 +140,17 @@ exports.index = (req, res) => {
 };
 
 exports.create = (req, res) => {
+    const options = {
+        summary: req.query.summary || "No title"
+    };
+
+    fs.readFile(appDir + '/client_secret.json', (err, content) => {
+        if (err) {
+            console.log('Get error when loading client secret file: ' + err);
+            return;
+        }
+        authorize(JSON.parse(content), addEvent, res, options);
+    });
 };
 
 exports.show = (req, res) => {
