@@ -9,7 +9,7 @@ var path = require('path'),
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/calendar-nodejs-quickstart.json
-var SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+var SCOPES = ['https://www.googleapis.com/auth/calendar'];
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
@@ -24,48 +24,12 @@ function authorize(credentials, callback, res, options) {
 
     fs.readFile(TOKEN_PATH, function (err, token) {
         if (err) {
-            getNewToken(oauth2Client, callback);
+            console.log("Build your tokens first, by execute `node build_token.js`");
         } else {
             oauth2Client.credentials = JSON.parse(token);
             return callback(oauth2Client, res, options);
         }
     });
-}
-
-function getNewToken(oauth2Client, callback) {
-    var authUrl = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES
-    });
-    console.log('Authorize this app by visiting this url: ', authUrl)
-    var rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
-    rl.question('Enter the code from the page here: ', function(code) {
-        rl.close();
-        oauth2Client.getToken(code, function (err, token) {
-            if (err) {
-                console.log('Error while trying to retrieve access token,', err);
-                return;
-            }
-            oauth2Client.credentials = token;
-            storeToken(token);
-            callback(oauth2Client, res);
-        });
-    });
-}
-
-function storeToken(token) {
-    try {
-        fs.mkdirSync(TOKEN_DIR);
-    } catch (err) {
-        if (err.code != 'EEXIST') {
-            throw err;
-        }
-    }
-    fs.writeFile(TOKEN_PATH, JSON.stringify(token));
-    console.log('Token stored to: ', TOKEN_PATH);
 }
 
 // API major part
@@ -87,12 +51,6 @@ function listEvents(auth, res, options={}) {
         if (events.length == 0) {
             console.log('No upcoming events found.');
         } else {
-            console.log('Upcoming 10 events');
-            for (var i = 0, len = events.length; i < len; i++) {
-                var event = events[i];
-                var start = event.start.dateTime || event.start.date;
-                console.log('%s - %s', start, event.summary);
-            }
             res.json(events);
         }
     });
