@@ -36,13 +36,14 @@ const authorize = (credentials, callback, res, options={}) => {
 };
 
 // API major part
-const listEvents = (auth, res, options={}) => {
+const listEvents = (auth, res, options) => {
     const calendar = google.calendar('v3');
     calendar.events.list({
         auth: auth,
         calendarId: 'primary',
-        timeMin: (new Date()).toISOString(),
-        maxResults: 10,
+        timeMin: TODAY.toISOString(),
+        timeMax: new Date(TODAY.setDate(TODAY.getDate() + 7)).toISOString(),
+        maxResults: 100,
         singleEvents: true,
         orderBy: 'startTime'
     }, (err, response) => {
