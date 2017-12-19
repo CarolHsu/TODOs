@@ -12,9 +12,17 @@ const EventList = ({ events }) => {
     });
 
     return (
+        <div className="container">
+        <div className="row">
+        <div className="col-md-3"></div>
+        <div className="col-md-6">
         <ul className="list-group">
             {EventListItems}
         </ul>
+        </div>
+        <div className="col-md-3"></div>
+        </div>
+        </div>
     );
 };
 

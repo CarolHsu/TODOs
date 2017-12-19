@@ -13,7 +13,7 @@ class App extends Component {
 
       this.state = {
           events: [],
-          shouldReload: false
+          hasBeenModified: false
       }
 
       this.loadEvents();
@@ -25,12 +25,15 @@ class App extends Component {
       });
   }
 
+  forceUpdateHandler() {
+      this.forceUpdate();
+  }
 
   render() {
     return (
       <div className="App">
-        <EventInput onNewEventSent={events => this.setState({ events })} />
-        <EventList events={this.state.events}/>
+        <EventInput onNewEventSent={events => this.setState({ events, hasBeenModified: true })} />
+        <EventList events={this.state.events} onClick={this.forceUpdateHandler} />
       </div>
     );
   }

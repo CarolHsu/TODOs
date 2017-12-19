@@ -21,10 +21,12 @@ Further information and examples, check [here](https://developers.google.com/goo
 ### Install
 
 ```
-$ git clone #[GITHUB addr]
+$ git clone git@github.com:CarolHsu/TODOs.git
 $ cd todoList
 $ npm install
-$ cd client npm install && cd ..
+$ cd client npm install
+$ yarn build
+$ cd ..
 $ node build_token.js
 $ npm start
 ```
