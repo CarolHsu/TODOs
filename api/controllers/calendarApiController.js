@@ -77,13 +77,17 @@ const getEvent = (auth, res, options) => {
 
 const addEvent = (auth, res, options) => {
     const calendar = google.calendar('v3');
+    Date.prototype.addHours = (h) => {
+        this.setHours(this.getHours() + h);
+        return this;
+    };
     const event = {
         summary: options.summary,
         start: {
-            dateTime: TODAY.toISOString()
+            dateTime: options.startTime
         },
         end: {
-            dateTime: TODAY.toISOString()
+            dateTime: new Date(this.start.dateTime).addHours(1).toISOString();
         }
     };
     calendar.events.insert({
@@ -142,7 +146,8 @@ exports.index = (req, res) => {
 
 exports.create = (req, res) => {
     const options = {
-        summary: req.query.summary || "No title"
+        summary: req.query.summary || "No title",
+        startTime: req.query.startTime
     };
 
     fs.readFile(appDir + '/client_secret.json', (err, content) => {

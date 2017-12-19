@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DateTime from 'react-datetime';
 import Client from '../Client';
 
 class EventInput extends Component {
@@ -7,6 +8,7 @@ class EventInput extends Component {
 
         this.state = {
             summary: "",
+            startTime: "",
             hasSent: false,
             newEvent: ""
         }
@@ -21,7 +23,11 @@ class EventInput extends Component {
 
     onPressEnter(key) {
         if(key === "Enter") {
-            Client.create(this.state.summary, (event) => {
+            const options = {
+                summary: this.state.summary,
+                startTime: this.state.startTime
+            }
+            Client.create(options, (event) => {
                 this.setState({
                     newEvent: event.summary,
                     summary: "",
@@ -37,14 +43,17 @@ class EventInput extends Component {
 
         let infoAlert = null;
         if(hasSent) {
-                infoAlert = <div className="alert alert-info">New event: {this.state.newEvent}</div>;
+                infoAlert = <div className="alert alert-info">New event: {this.state.newEvent}, time: {this.state.startTime}</div>;
         }
 
         return (
             <div className="container">
-            <div className="container">
+            <div className="row">
+            <div className="col-md-3">
+            <DateTime onChange={e => this.setState({startTime: new Date(e).toISOString()})} />
+            </div>
+            <div className="col-md-8">
             <div className="input-group">
-                <span className="input-group-addon">New Task</span>
                 <input 
                 type="text" 
                 className="form-control"
@@ -54,7 +63,8 @@ class EventInput extends Component {
                 onKeyPress={e => this.onPressEnter(e.key)} />
             </div>
             </div>
-            <div className="container">
+            </div>
+            <div className="row">
             {infoAlert}
             </div>
             </div>

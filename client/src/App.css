@@ -1,3 +1,5 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap.css";
+
 .App {
   text-align: center;
 }

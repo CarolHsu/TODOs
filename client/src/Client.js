@@ -7,8 +7,10 @@ const index = (callback) => {
     .then(callback);
 };
 
-const create = (summary, callback) => {
-    return fetch(`/events?summary=${summary}`, {
+const create = (options, callback) => {
+    const summary = options.summary
+    const startTime = options.startTime
+    return fetch(`/events?summary=${summary}&startTime=${startTime}`, {
         method: 'POST',
         accept: "application/json"
     })
