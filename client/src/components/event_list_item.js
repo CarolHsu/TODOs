@@ -4,8 +4,8 @@ import Client from '../Client';
 const EventListItem = ({ event }) => {
 
     const deleteEvent = (event) => {
-        console.log(event);
         Client.destroy(event.id, (event) => {
+            console.log(event);
         });
     };
 

@@ -8,9 +8,7 @@ const index = (callback) => {
 };
 
 const create = (options, callback) => {
-    const summary = options.summary
-    const startTime = options.startTime
-    return fetch(`/events?summary=${summary}&startTime=${startTime}`, {
+    return fetch(`/events/${options.summary}/${options.startTime}`, {
         method: 'POST',
         accept: "application/json"
     })
@@ -20,10 +18,11 @@ const create = (options, callback) => {
 };
 
 const destroy = (id, callback) => {
-    return fetch(`/event/{id}`, {
+    return fetch(`/events/${id}`, {
         method: 'DELETE',
         accept: "application/json"
     })
+    .then(checkStatus)
     .then(parseJSON)
     .then(callback);
 };

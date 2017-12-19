@@ -15,7 +15,6 @@ const TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 const TOKEN_PATH = TOKEN_DIR + 'calendar-nodejs-quickstart.json';
 
-const TODAY = new Date();
 
 
 const authorize = (credentials, callback, res, options={}) => {
@@ -37,26 +36,25 @@ const authorize = (credentials, callback, res, options={}) => {
 
 // API major part
 const listEvents = (auth, res, options) => {
+    const TODAY = new Date((new Date()).setHours(0, 0, 0, 0));
     const calendar = google.calendar('v3');
-    calendar.events.list({
+    const condition = {
         auth: auth,
         calendarId: 'primary',
         timeMin: TODAY.toISOString(),
-        timeMax: new Date(TODAY.setDate(TODAY.getDate() + 7)).toISOString(),
+        timeMax: (new Date(TODAY.setDate(TODAY.getDate() + 7)).toISOString()),
         maxResults: 100,
         singleEvents: true,
         orderBy: 'startTime'
-    }, (err, response) => {
+    };
+    console.log("query condition: ", condition);
+    calendar.events.list(condition, (err, response) => {
         if (err) {
-            console.log('The API returns an error: ', err)
-            return;
+            console.log('The API returns an error: ', err);
+            res.json({error: err});
         }
         const events = response.items;
-        if (events.length == 0) {
-            console.log('No upcoming events found.');
-        } else {
-            res.json(events);
-        }
+        res.json(events);
     });
 };
 
@@ -69,7 +67,7 @@ const getEvent = (auth, res, options) => {
     }, (err, response) => {
         if (err) {
             console.log('The API returns an error: ', err)
-            return;
+            res.json({error: err});
         }
         res.json(response);
     });
@@ -77,19 +75,19 @@ const getEvent = (auth, res, options) => {
 
 const addEvent = (auth, res, options) => {
     const calendar = google.calendar('v3');
-    Date.prototype.addHours = (h) => {
-        this.setHours(this.getHours() + h);
-        return this;
-    };
+    const summary = options.summary;
+    const startTime = options.startTime;
+    const endTime = options.endTime;
     const event = {
-        summary: options.summary,
+        summary: summary,
         start: {
-            dateTime: options.startTime
+            dateTime: startTime
         },
         end: {
-            dateTime: new Date(this.start.dateTime).addHours(1).toISOString();
+            dateTime: endTime
         }
     };
+    console.log("add Event: ", event);
     calendar.events.insert({
         auth: auth,
         calendarId: 'primary',
@@ -97,7 +95,7 @@ const addEvent = (auth, res, options) => {
     }, (err, response) => {
         if (err) {
             console.log('Error: ', err);
-            return;
+            res.json({ error: err });
         }
         res.json(response);
     });
@@ -113,7 +111,7 @@ const updateEvent = (auth, res, options) => {
     }, (err, response) => {
         if (err) {
             console.log('Error: ', err);
-            return;
+            res.json({error: err});
         }
         res.json(response);
     });
@@ -128,9 +126,9 @@ const removeEvent = (auth, res, options) => {
     }, (err) => {
         if (err) {
             console.log('Error: ', err);
-            return;
+            res.json({error: err});
         }
-        res.json({'message': 'Deleted event successfully'});
+        res.json({status: 200, 'message': 'Deleted event successfully'});
     });
 };
 
@@ -145,9 +143,12 @@ exports.index = (req, res) => {
 };
 
 exports.create = (req, res) => {
+    const startTime = parseInt(req.params.startTime);
+    const endTime = startTime + 1000 * 60 * 30;
     const options = {
-        summary: req.query.summary || "No title",
-        startTime: req.query.startTime
+        summary: req.params.summary || "No title",
+        startTime: (new Date(startTime)).toISOString(),
+        endTime: (new Date(endTime)).toISOString()
     };
 
     fs.readFile(appDir + '/client_secret.json', (err, content) => {

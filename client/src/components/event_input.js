@@ -34,7 +34,9 @@ class EventInput extends Component {
                     hasSent: true
                 });
             });
-            this.props.onNewEventSent();
+            Client.index(events => {
+                this.props.onNewEventSent(events);
+            });
         }
     }
 
@@ -50,7 +52,7 @@ class EventInput extends Component {
             <div className="container">
             <div className="row">
             <div className="col-md-3">
-            <DateTime onChange={e => this.setState({startTime: new Date(e).toISOString()})} />
+            <DateTime onChange={value => this.setState({startTime: (new Date(value)).getTime()})} />
             </div>
             <div className="col-md-8">
             <div className="input-group">

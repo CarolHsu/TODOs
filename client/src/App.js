@@ -12,7 +12,8 @@ class App extends Component {
       this.loadEvents = this.loadEvents.bind(this);
 
       this.state = {
-          events: []
+          events: [],
+          shouldReload: false
       }
 
       this.loadEvents();
@@ -20,14 +21,15 @@ class App extends Component {
 
   loadEvents() {
       Client.index(events => {
-          this.setState({ events });
+          this.setState({ events, shouldReload: false });
       });
   }
+
 
   render() {
     return (
       <div className="App">
-        <EventInput onNewEventSent={this.loadEvents} />
+        <EventInput onNewEventSent={events => this.setState({ events })} />
         <EventList events={this.state.events}/>
       </div>
     );

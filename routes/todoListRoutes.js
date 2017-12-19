@@ -4,7 +4,9 @@ module.exports = function(app) {
     var calendarApi = require('../api/controllers/calendarApiController');
 
     app.route('/events')
-    .get(calendarApi.index)
+    .get(calendarApi.index);
+    
+    app.route('/events/:summary/:startTime')
     .post(calendarApi.create);
 
     app.route('/events/:eventId')
