@@ -21,7 +21,6 @@ class EventInput extends Component {
 
     onPressEnter(key) {
         if(key === "Enter") {
-            // TODO: post this.state = { summary }
             Client.create(this.state.summary, (event) => {
                 this.setState({
                     newEvent: event.summary,
@@ -29,20 +28,35 @@ class EventInput extends Component {
                     hasSent: true
                 });
             });
+            this.props.onNewEventSent();
         }
     }
 
     render() {
+        const hasSent = this.state.hasSent
+
+        let infoAlert = null;
+        if(hasSent) {
+                infoAlert = <div className="alert alert-info">New event: {this.state.newEvent}</div>;
+        }
+
         return (
-            <div>
-                <h1>Enter your new event</h1>
-                    <input 
-                    type="text" 
-                    value={this.state.summary} 
-                    onChange={e => this.typingEvent(e.target.value)} 
-                    onKeyPress={e => this.onPressEnter(e.key)} />
-                <h3>New event {this.state.summary}</h3>
-                <p>{this.state.hasSent ? `new Event ${this.state.newEvent} has been Added!` : ""}</p>
+            <div className="container">
+            <div className="container">
+            <div className="input-group">
+                <span className="input-group-addon">New Task</span>
+                <input 
+                type="text" 
+                className="form-control"
+                placeholder="Enter your new task and press enter."
+                value={this.state.summary} 
+                onChange={e => this.typingEvent(e.target.value)} 
+                onKeyPress={e => this.onPressEnter(e.key)} />
+            </div>
+            </div>
+            <div className="container">
+            {infoAlert}
+            </div>
             </div>
         );
     }

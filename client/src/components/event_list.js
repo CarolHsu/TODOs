@@ -2,6 +2,7 @@ import React from 'react';
 import EventListItem from './event_list_item';
 
 const EventList = ({ events }) => {
+
     const EventListItems = events.map((event) => {
         return(
             <EventListItem 
@@ -9,8 +10,9 @@ const EventList = ({ events }) => {
             event={event} />
         );
     });
+
     return (
-        <ul>
+        <ul className="list-group">
             {EventListItems}
         </ul>
     );

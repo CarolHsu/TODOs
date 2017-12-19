@@ -9,10 +9,16 @@ class App extends Component {
   constructor(props) {
       super(props);
 
+      this.loadEvents = this.loadEvents.bind(this);
+
       this.state = {
           events: []
       }
 
+      this.loadEvents();
+  }
+
+  loadEvents() {
       Client.index(events => {
           this.setState({ events });
       });
@@ -21,7 +27,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <EventInput />
+        <EventInput onNewEventSent={this.loadEvents} />
         <EventList events={this.state.events}/>
       </div>
     );

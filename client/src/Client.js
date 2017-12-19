@@ -17,6 +17,15 @@ const create = (summary, callback) => {
     .then(callback);
 };
 
+const destroy = (id, callback) => {
+    return fetch(`/event/{id}`, {
+        method: 'DELETE',
+        accept: "application/json"
+    })
+    .then(parseJSON)
+    .then(callback);
+};
+
 const checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
         return response;
@@ -34,7 +43,8 @@ const parseJSON = (response) => {
 
 const Client = {
     index,
-    create
+    create,
+    destroy
 };
 
 export default Client;
